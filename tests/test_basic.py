@@ -43,3 +43,10 @@ def test_org_parser_extracts_title(sample_org_file):
     parser = OrgParser(sample_org_file)
     headers = parser.parse_headers()
     assert headers['title'] == "Sample Test Note", "Should extract title from #+TITLE line"
+
+
+def test_org_parser_extracts_filetags(sample_org_file):
+    """Test that OrgParser extracts filetags - this should fail for now."""
+    parser = OrgParser(sample_org_file)
+    headers = parser.parse_headers()
+    assert headers['filetags'] == ":test:reference:sample:", "Should extract filetags from #+filetags line"

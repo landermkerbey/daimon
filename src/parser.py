@@ -10,5 +10,18 @@ class OrgParser:
     
     def parse_headers(self):
         """Parse org file headers and return as dictionary."""
-        # For now, return empty dict - we're building the interface
-        return {}
+        headers = {}
+        
+        with open(self.file_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('#+TITLE:'):
+                    # Extract title after the colon and strip whitespace
+                    title = line[8:].strip()
+                    headers['title'] = title
+        
+        # Set title to None if not found
+        if 'title' not in headers:
+            headers['title'] = None
+            
+        return headers
