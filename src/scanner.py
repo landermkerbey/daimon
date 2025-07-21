@@ -10,5 +10,15 @@ class KnowledgeBaseScanner:
     
     def scan_org_files(self):
         """Scan for org files in the knowledge base and return list of paths."""
-        # For now, return empty list - we're building the interface first
-        return []
+        org_files = []
+        
+        # Handle case where directory doesn't exist
+        if not self.root_directory.exists():
+            return org_files
+        
+        # Walk through directory tree looking for .org files
+        for file_path in self.root_directory.rglob("*.org"):
+            if file_path.is_file():
+                org_files.append(file_path)
+        
+        return org_files

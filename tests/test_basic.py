@@ -94,9 +94,19 @@ def test_scanner_creation():
 
 
 def test_scanner_finds_org_files():
-    """Test that KnowledgeBaseScanner finds org files - this should fail for now."""
+    """Test that KnowledgeBaseScanner finds org files."""
     from scanner import KnowledgeBaseScanner
     scanner = KnowledgeBaseScanner("tests/fixtures/")
     org_files = scanner.scan_org_files()
     assert len(org_files) > 0, "Should find at least one org file"
     assert any("sample.org" in str(f) for f in org_files), "Should find sample.org file"
+
+
+def test_chroma_manager_creation():
+    """Test that ChromaManager can be created - this should fail for now."""
+    try:
+        from chroma_manager import ChromaManager
+        manager = ChromaManager("./local_cache/chromadb")
+        assert manager is not None, "Should be able to create ChromaManager instance"
+    except ModuleNotFoundError:
+        pytest.fail("chroma_manager module not found - need to create src/chroma_manager.py")
