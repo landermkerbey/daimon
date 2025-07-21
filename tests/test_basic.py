@@ -1,4 +1,5 @@
 import pytest
+from pathlib import Path
 
 
 def test_placeholder_should_fail():
@@ -10,3 +11,9 @@ def test_placeholder_should_fail():
 def test_basic_imports():
     """Test that basic Python functionality works."""
     assert True
+
+
+def test_sample_org_file_exists(sample_org_file):
+    """Test that our sample org file fixture works."""
+    assert sample_org_file.exists(), f"Sample org file should exist at {sample_org_file}"
+    assert sample_org_file.suffix == ".org", "File should have .org extension"

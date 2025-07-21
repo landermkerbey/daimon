@@ -22,3 +22,9 @@ This is sample org content for testing.
 ** Subheading
 Some more content here.
 """
+
+
+@pytest.fixture
+def sample_org_file():
+    """Path to sample org file for testing."""
+    return Path(__file__).parent / "fixtures" / "sample.org"
