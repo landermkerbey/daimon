@@ -103,10 +103,32 @@ def test_scanner_finds_org_files():
 
 
 def test_chroma_manager_creation():
-    """Test that ChromaManager can be created - this should fail for now."""
-    try:
-        from chroma_manager import ChromaManager
-        manager = ChromaManager("./local_cache/chromadb")
-        assert manager is not None, "Should be able to create ChromaManager instance"
-    except ModuleNotFoundError:
-        pytest.fail("chroma_manager module not found - need to create src/chroma_manager.py")
+    """Test that ChromaManager can be created."""
+    from chroma_manager import ChromaManager
+    manager = ChromaManager("./local_cache/chromadb")
+    assert manager is not None, "Should be able to create ChromaManager instance"
+
+
+def test_end_to_end_pipeline(sample_org_file):
+    """Test end-to-end pipeline processing - this should fail for now."""
+    from config import Config
+    from scanner import KnowledgeBaseScanner
+    from parser import OrgParser
+    from chunking import ChunkingEngine
+    from chroma_manager import ChromaManager
+    
+    # Initialize components
+    config = Config()
+    scanner = KnowledgeBaseScanner("tests/fixtures/")
+    parser = OrgParser(sample_org_file)
+    chunker = ChunkingEngine(chunk_size=config.chunk_size, chunk_overlap=config.chunk_overlap)
+    chroma = ChromaManager(config.chroma_db_path)
+    
+    # Process the pipeline
+    content = parser.parse_content()
+    chunks = chunker.chunk_content(content)
+    chroma.create_collection("test_collection")
+    chroma.store_chunks("test_collection", chunks)
+    
+    # This should fail because we haven't implemented the full pipeline yet
+    assert False, "End-to-end pipeline not fully implemented yet"
