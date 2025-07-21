@@ -109,26 +109,28 @@ def test_chroma_manager_creation():
     assert manager is not None, "Should be able to create ChromaManager instance"
 
 
-def test_end_to_end_pipeline(sample_org_file):
-    """Test end-to-end pipeline processing - this should fail for now."""
+def test_end_to_end_pipeline(sample_org_file, temp_dir):
+    """Test end-to-end pipeline processing."""
     from config import Config
     from scanner import KnowledgeBaseScanner
     from parser import OrgParser
     from chunking import ChunkingEngine
     from chroma_manager import ChromaManager
     
-    # Initialize components
+    # Initialize components with temporary ChromaDB path
     config = Config()
     scanner = KnowledgeBaseScanner("tests/fixtures/")
     parser = OrgParser(sample_org_file)
     chunker = ChunkingEngine(chunk_size=config.chunk_size, chunk_overlap=config.chunk_overlap)
-    chroma = ChromaManager(config.chroma_db_path)
+    chroma = ChromaManager(temp_dir / "test_chromadb")
     
     # Process the pipeline
     content = parser.parse_content()
     chunks = chunker.chunk_content(content)
-    chroma.create_collection("test_collection")
-    chroma.store_chunks("test_collection", chunks)
+    collection = chroma.create_collection("test_collection")
+    stored_count = chroma.store_chunks("test_collection", chunks)
     
-    # This should fail because we haven't implemented the full pipeline yet
-    assert False, "End-to-end pipeline not fully implemented yet"
+    # Verify the pipeline worked
+    assert len(chunks) > 0, "Should have created chunks from content"
+    assert stored_count == len(chunks), "Should have stored all chunks"
+    assert collection.count() == len(chunks), "Collection should contain all chunks"
