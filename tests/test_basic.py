@@ -87,7 +87,16 @@ def test_chunking_engine_splits_content():
 
 
 def test_scanner_creation():
-    """Test that KnowledgeBaseScanner can be created - this should fail for now."""
+    """Test that KnowledgeBaseScanner can be created."""
     from scanner import KnowledgeBaseScanner
     scanner = KnowledgeBaseScanner("./knowledge_base")
     assert scanner is not None, "Should be able to create KnowledgeBaseScanner instance"
+
+
+def test_scanner_finds_org_files():
+    """Test that KnowledgeBaseScanner finds org files - this should fail for now."""
+    from scanner import KnowledgeBaseScanner
+    scanner = KnowledgeBaseScanner("tests/fixtures/")
+    org_files = scanner.scan_org_files()
+    assert len(org_files) > 0, "Should find at least one org file"
+    assert any("sample.org" in str(f) for f in org_files), "Should find sample.org file"
