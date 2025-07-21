@@ -46,7 +46,14 @@ def test_org_parser_extracts_title(sample_org_file):
 
 
 def test_org_parser_extracts_filetags(sample_org_file):
-    """Test that OrgParser extracts filetags - this should fail for now."""
+    """Test that OrgParser extracts filetags."""
     parser = OrgParser(sample_org_file)
     headers = parser.parse_headers()
-    assert headers['filetags'] == ":test:reference:sample:", "Should extract filetags from #+filetags line"
+    assert headers['filetags'] == ["test", "reference", "sample"], "Should extract filetags as list from #+filetags line"
+
+
+def test_org_parser_extracts_id(sample_org_file):
+    """Test that OrgParser extracts ID from PROPERTIES drawer - this should fail for now."""
+    parser = OrgParser(sample_org_file)
+    headers = parser.parse_headers()
+    assert headers['id'] == "12345678-1234-5678-9abc-123456789012", "Should extract ID from PROPERTIES drawer"

@@ -19,9 +19,17 @@ class OrgParser:
                     # Extract title after the colon and strip whitespace
                     title = line[8:].strip()
                     headers['title'] = title
+                elif line.startswith('#+filetags:'):
+                    # Extract filetags after the colon and parse tags
+                    filetags_str = line[11:].strip()
+                    # Split on colons and filter out empty strings
+                    tags = [tag for tag in filetags_str.split(':') if tag]
+                    headers['filetags'] = tags
         
-        # Set title to None if not found
+        # Set defaults if not found
         if 'title' not in headers:
             headers['title'] = None
+        if 'filetags' not in headers:
+            headers['filetags'] = []
             
         return headers
