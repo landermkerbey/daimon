@@ -8,5 +8,25 @@ class ChunkingEngine:
     
     def chunk_content(self, content):
         """Split content into chunks and return as list."""
-        # For now, just return the content as a single chunk - building interface
-        return [content]
+        if len(content) <= self.chunk_size:
+            return [content]
+        
+        chunks = []
+        start = 0
+        
+        while start < len(content):
+            # Calculate end position for this chunk
+            end = start + self.chunk_size
+            
+            # Extract the chunk
+            chunk = content[start:end]
+            chunks.append(chunk)
+            
+            # Move start position forward, accounting for overlap
+            # If this is the last chunk, we're done
+            if end >= len(content):
+                break
+                
+            start = end - self.chunk_overlap
+        
+        return chunks

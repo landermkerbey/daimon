@@ -77,9 +77,17 @@ def test_chunking_engine_creation():
 
 
 def test_chunking_engine_splits_content():
-    """Test that ChunkingEngine splits long content - this should fail for now."""
+    """Test that ChunkingEngine splits long content."""
     from chunking import ChunkingEngine
     engine = ChunkingEngine(chunk_size=50)
     long_content = "This is a very long piece of content that should definitely be split into multiple chunks when processed by the chunking engine because it exceeds the specified chunk size limit."
     chunks = engine.chunk_content(long_content)
     assert len(chunks) > 1, "Should split long content into multiple chunks"
+    assert all(len(chunk) <= 50 for chunk in chunks), "Each chunk should respect size limit"
+
+
+def test_scanner_creation():
+    """Test that KnowledgeBaseScanner can be created - this should fail for now."""
+    from scanner import KnowledgeBaseScanner
+    scanner = KnowledgeBaseScanner("./knowledge_base")
+    assert scanner is not None, "Should be able to create KnowledgeBaseScanner instance"
