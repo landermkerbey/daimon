@@ -22,11 +22,13 @@ class ChunkingEngine:
             chunk = content[start:end]
             chunks.append(chunk)
             
-            # Move start position forward, accounting for overlap
             # If this is the last chunk, we're done
             if end >= len(content):
                 break
-                
-            start = end - self.chunk_overlap
+            
+            # Move start position forward, accounting for overlap
+            # Ensure we always make progress to avoid infinite loops
+            step = max(1, self.chunk_size - self.chunk_overlap)
+            start = start + step
         
         return chunks
