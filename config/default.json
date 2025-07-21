@@ -1,0 +1,6 @@
+{
+  "knowledge_base_root": "./knowledge_base",
+  "chroma_db_path": "./local_cache/chromadb",
+  "chunk_size": 1000,
+  "chunk_overlap": 200
+}
