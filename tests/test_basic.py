@@ -4,6 +4,7 @@ import sys
 sys.path.append('src')
 
 from config import Config
+from parser import OrgParser
 
 
 def test_placeholder_should_fail():
@@ -28,3 +29,17 @@ def test_config_loads():
     config = Config()
     assert config.knowledge_base_root == "./knowledge_base"
     assert config.chunk_size == 1000
+
+
+def test_org_parser_creation(sample_org_file):
+    """Test that OrgParser can be created and returns a dictionary."""
+    parser = OrgParser(sample_org_file)
+    headers = parser.parse_headers()
+    assert isinstance(headers, dict), "parse_headers should return a dictionary"
+
+
+def test_org_parser_extracts_title(sample_org_file):
+    """Test that OrgParser extracts title - this should fail for now."""
+    parser = OrgParser(sample_org_file)
+    headers = parser.parse_headers()
+    assert headers['title'] == "Sample Test Note", "Should extract title from #+TITLE line"
