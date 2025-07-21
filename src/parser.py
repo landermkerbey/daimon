@@ -48,3 +48,33 @@ class OrgParser:
             headers['id'] = None
             
         return headers
+    
+    def parse_content(self):
+        """Parse org file content, excluding headers and properties."""
+        content_lines = []
+        in_properties = False
+        
+        with open(self.file_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                stripped_line = line.strip()
+                
+                # Skip PROPERTIES drawer
+                if stripped_line == ':PROPERTIES:':
+                    in_properties = True
+                    continue
+                elif stripped_line == ':END:':
+                    in_properties = False
+                    continue
+                elif in_properties:
+                    continue
+                
+                # Skip header lines
+                if (stripped_line.startswith('#+TITLE:') or 
+                    stripped_line.startswith('#+filetags:')):
+                    continue
+                
+                # Keep everything else as content
+                content_lines.append(line.rstrip())
+        
+        # Join lines and strip leading/trailing whitespace
+        return '\n'.join(content_lines).strip()

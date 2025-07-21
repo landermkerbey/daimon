@@ -60,7 +60,17 @@ def test_org_parser_extracts_id(sample_org_file):
 
 
 def test_org_parser_extracts_content(sample_org_file):
-    """Test that OrgParser extracts main content - this should fail for now."""
+    """Test that OrgParser extracts main content."""
     parser = OrgParser(sample_org_file)
     content = parser.parse_content()
     assert "Main Topic" in content, "Should extract main content body"
+    assert "This is some sample content" in content, "Should include paragraph text"
+    assert "#+TITLE:" not in content, "Should not include title header"
+    assert ":PROPERTIES:" not in content, "Should not include properties drawer"
+
+
+def test_chunking_engine_creation():
+    """Test that ChunkingEngine can be created - this should fail for now."""
+    from chunking import ChunkingEngine
+    engine = ChunkingEngine()
+    assert engine is not None, "Should be able to create ChunkingEngine instance"
