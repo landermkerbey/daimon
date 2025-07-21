@@ -70,7 +70,16 @@ def test_org_parser_extracts_content(sample_org_file):
 
 
 def test_chunking_engine_creation():
-    """Test that ChunkingEngine can be created - this should fail for now."""
+    """Test that ChunkingEngine can be created."""
     from chunking import ChunkingEngine
     engine = ChunkingEngine()
     assert engine is not None, "Should be able to create ChunkingEngine instance"
+
+
+def test_chunking_engine_splits_content():
+    """Test that ChunkingEngine splits long content - this should fail for now."""
+    from chunking import ChunkingEngine
+    engine = ChunkingEngine(chunk_size=50)
+    long_content = "This is a very long piece of content that should definitely be split into multiple chunks when processed by the chunking engine because it exceeds the specified chunk size limit."
+    chunks = engine.chunk_content(long_content)
+    assert len(chunks) > 1, "Should split long content into multiple chunks"
