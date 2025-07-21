@@ -53,7 +53,14 @@ def test_org_parser_extracts_filetags(sample_org_file):
 
 
 def test_org_parser_extracts_id(sample_org_file):
-    """Test that OrgParser extracts ID from PROPERTIES drawer - this should fail for now."""
+    """Test that OrgParser extracts ID from PROPERTIES drawer."""
     parser = OrgParser(sample_org_file)
     headers = parser.parse_headers()
     assert headers['id'] == "12345678-1234-5678-9abc-123456789012", "Should extract ID from PROPERTIES drawer"
+
+
+def test_org_parser_extracts_content(sample_org_file):
+    """Test that OrgParser extracts main content - this should fail for now."""
+    parser = OrgParser(sample_org_file)
+    content = parser.parse_content()
+    assert "Main Topic" in content, "Should extract main content body"

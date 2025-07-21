@@ -11,11 +11,24 @@ class OrgParser:
     def parse_headers(self):
         """Parse org file headers and return as dictionary."""
         headers = {}
+        in_properties = False
         
         with open(self.file_path, 'r', encoding='utf-8') as f:
             for line in f:
                 line = line.strip()
-                if line.startswith('#+TITLE:'):
+                
+                # Check for PROPERTIES drawer
+                if line == ':PROPERTIES:':
+                    in_properties = True
+                    continue
+                elif line == ':END:':
+                    in_properties = False
+                    continue
+                elif in_properties and line.startswith(':ID:'):
+                    # Extract ID after the colon and strip whitespace
+                    id_value = line[4:].strip()
+                    headers['id'] = id_value
+                elif line.startswith('#+TITLE:'):
                     # Extract title after the colon and strip whitespace
                     title = line[8:].strip()
                     headers['title'] = title
@@ -31,5 +44,7 @@ class OrgParser:
             headers['title'] = None
         if 'filetags' not in headers:
             headers['filetags'] = []
+        if 'id' not in headers:
+            headers['id'] = None
             
         return headers
