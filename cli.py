@@ -12,101 +12,123 @@ from chunking import ChunkingEngine
 from chroma_manager import ChromaManager
 
 
-def config_command(config_path):
+def config_command(config_path, db_path_override=None):
     """Display current configuration settings."""
-    print("Knowledge Management System Configuration")
-    print("=" * 50)
-    print(f"Config file: {config_path}")
-    print()
+    output = []
+    output.append("Knowledge Management System Configuration")
+    output.append("=" * 50)
+    output.append(f"Config file: {config_path}")
+    output.append("")
     
     try:
         config = Config(config_path)
-        print("Settings:")
-        print(f"  Knowledge Base Root: {config.knowledge_base_root}")
-        print(f"  ChromaDB Path: {config.chroma_db_path}")
-        print(f"  Chunk Size: {config.chunk_size}")
-        print(f"  Chunk Overlap: {config.chunk_overlap}")
+        output.append("Settings:")
+        output.append(f"  Knowledge Base Root: {config.knowledge_base_root}")
+        
+        # Use override if provided, otherwise use config
+        db_path = db_path_override if db_path_override else config.chroma_db_path
+        output.append(f"  ChromaDB Path: {db_path}")
+        if db_path_override:
+            output.append(f"    (overridden from command line)")
+        
+        output.append(f"  Chunk Size: {config.chunk_size}")
+        output.append(f"  Chunk Overlap: {config.chunk_overlap}")
         
         # Check if paths exist
         kb_path = Path(config.knowledge_base_root)
-        db_path = Path(config.chroma_db_path)
+        db_path_obj = Path(db_path)
         
-        print()
-        print("Path Status:")
-        print(f"  Knowledge Base: {'✓ exists' if kb_path.exists() else '✗ not found'} ({kb_path.absolute()})")
-        print(f"  ChromaDB: {'✓ exists' if db_path.exists() else '✗ not found'} ({db_path.absolute()})")
+        output.append("")
+        output.append("Path Status:")
+        output.append(f"  Knowledge Base: {'✓ exists' if kb_path.exists() else '✗ not found'} ({kb_path.absolute()})")
+        output.append(f"  ChromaDB: {'✓ exists' if db_path_obj.exists() else '✗ not found'} ({db_path_obj.absolute()})")
         
     except Exception as e:
-        print(f"Error loading config: {e}")
+        output.append(f"Error loading config: {e}")
+    
+    result = "\n".join(output)
+    print(result)
+    return result
 
 
-def status_command(config_path):
+def status_command(config_path, db_path_override=None):
     """Show knowledge base status and statistics."""
-    print("Knowledge Base Status")
-    print("=" * 30)
+    output = []
+    output.append("Knowledge Base Status")
+    output.append("=" * 30)
     
     try:
         config = Config(config_path)
-        print(f"Using config: {config_path}")
-        print()
+        output.append(f"Using config: {config_path}")
+        output.append("")
         
         # Check knowledge base files
         scanner = KnowledgeBaseScanner(config.knowledge_base_root)
         org_files = scanner.scan_org_files()
-        print(f"Source Files:")
-        print(f"  Org files found: {len(org_files)}")
+        output.append(f"Source Files:")
+        output.append(f"  Org files found: {len(org_files)}")
         if org_files:
-            print(f"  Files:")
+            output.append(f"  Files:")
             for org_file in sorted(org_files):
-                print(f"    - {org_file.name}")
-        print()
+                output.append(f"    - {org_file.name}")
+        output.append("")
         
         # Check ChromaDB status
-        chroma = ChromaManager(config.chroma_db_path)
-        print("ChromaDB Status:")
+        db_path = db_path_override if db_path_override else config.chroma_db_path
+        chroma = ChromaManager(db_path)
+        output.append("ChromaDB Status:")
         
         try:
             # Try to get collections
             collections = chroma.client.list_collections()
-            print(f"  Collections: {len(collections)}")
+            output.append(f"  Collections: {len(collections)}")
             
             if collections:
                 for collection in collections:
                     count = collection.count()
-                    print(f"    - {collection.name}: {count} documents")
+                    output.append(f"    - {collection.name}: {count} documents")
             else:
-                print("    No collections found")
-                print("    Tip: Run 'python cli.py index' to create and populate collections")
+                output.append("    No collections found")
+                output.append("    Tip: Run 'python cli.py index' to create and populate collections")
                 
         except Exception as e:
-            print(f"  Database not accessible: {e}")
-            print("  Tip: Run 'python cli.py index' to initialize the database")
+            output.append(f"  Database not accessible: {e}")
+            output.append("  Tip: Run 'python cli.py index' to initialize the database")
             
     except Exception as e:
-        print(f"Error checking status: {e}")
+        output.append(f"Error checking status: {e}")
+    
+    result = "\n".join(output)
+    print(result)
+    return result
 
 
-def search_command(query, config_path, results=5, collection="knowledge_base"):
+def search_command(query, config_path, results=5, collection="knowledge_base", db_path_override=None):
     """Search the knowledge base for relevant content."""
+    output = []
+    
     # Load configuration
     config = Config(config_path)
     
     # Initialize ChromaManager
-    chroma = ChromaManager(config.chroma_db_path)
+    db_path = db_path_override if db_path_override else config.chroma_db_path
+    chroma = ChromaManager(db_path)
     
-    print(f"Searching for: '{query}'")
-    print(f"Collection: {collection}")
-    print(f"Max results: {results}")
-    print("-" * 60)
+    output.append(f"Searching for: '{query}'")
+    output.append(f"Collection: {collection}")
+    output.append(f"Max results: {results}")
+    output.append("-" * 60)
     
     # Query the collection
     search_results = chroma.query_collection(collection, query, n_results=results)
     
     # Check if we got any results
     if not search_results["documents"] or not search_results["documents"][0]:
-        print("No results found.")
-        print("\nTip: Make sure you've indexed your content first with 'python cli.py index'")
-        return
+        output.append("No results found.")
+        output.append("\nTip: Make sure you've indexed your content first with 'python cli.py index'")
+        result = "\n".join(output)
+        print(result)
+        return result
     
     # Display results
     documents = search_results["documents"][0]
@@ -114,54 +136,65 @@ def search_command(query, config_path, results=5, collection="knowledge_base"):
     ids = search_results.get("ids", [None] * len(documents))[0] if search_results.get("ids") else [None] * len(documents)
     
     for i, (doc, distance, doc_id) in enumerate(zip(documents, distances, ids), 1):
-        print(f"Result {i}:")
+        output.append(f"Result {i}:")
         if distance is not None:
-            print(f"  Relevance: {1 - distance:.3f}" if distance <= 1 else f"  Distance: {distance:.3f}")
+            output.append(f"  Relevance: {1 - distance:.3f}" if distance <= 1 else f"  Distance: {distance:.3f}")
         if doc_id:
-            print(f"  ID: {doc_id}")
+            output.append(f"  ID: {doc_id}")
         
         # Truncate very long content for readability
         content = doc.strip()
         if len(content) > 300:
             content = content[:300] + "..."
         
-        print(f"  Content:")
+        output.append(f"  Content:")
         # Indent the content for better readability
         for line in content.split('\n'):
-            print(f"    {line}")
+            output.append(f"    {line}")
         
-        print("-" * 40)
+        output.append("-" * 40)
+    
+    result = "\n".join(output)
+    print(result)
+    return result
 
 
-def index_command(config_path):
+def index_command(config_path, db_path_override=None):
     """Index org files into ChromaDB."""
+    output = []
+    
     # Load configuration
     config = Config(config_path)
-    print(f"Loading config from {config_path}")
+    output.append(f"Loading config from {config_path}")
     
     # Initialize components
     scanner = KnowledgeBaseScanner(config.knowledge_base_root)
     chunker = ChunkingEngine(chunk_size=config.chunk_size, chunk_overlap=config.chunk_overlap)
-    chroma = ChromaManager(config.chroma_db_path)
+    
+    # Use override if provided, otherwise use config
+    db_path = db_path_override if db_path_override else config.chroma_db_path
+    chroma = ChromaManager(db_path)
     
     # Find all org files
     org_files = scanner.scan_org_files()
-    print(f"Found {len(org_files)} org files to process")
+    output.append(f"Found {len(org_files)} org files to process")
     
     if not org_files:
-        print("No org files found. Check your knowledge_base_root path in config.")
-        return
+        output.append("No org files found. Check your knowledge_base_root path in config.")
+        result = "\n".join(output)
+        print(result)
+        return result
     
     # Create collection for this indexing run (this will clear existing data)
     collection_name = "knowledge_base"
-    print(f"Creating/clearing collection: {collection_name}")
+    output.append(f"Creating/clearing collection: {collection_name}")
     chroma.clear_and_create_collection(collection_name)
     
     total_chunks = 0
     
     # Process each file
     for i, org_file in enumerate(org_files, 1):
-        print(f"Processing {i}/{len(org_files)}: {org_file.name}")
+        output.append(f"Processing {i}/{len(org_files)}: {org_file.name}")
         
         try:
             # Parse the org file
@@ -171,7 +204,7 @@ def index_command(config_path):
             
             # Skip files with no content
             if not content.strip():
-                print(f"  Skipping {org_file.name} - no content")
+                output.append(f"  Skipping {org_file.name} - no content")
                 continue
             
             # Chunk the content
@@ -186,18 +219,23 @@ def index_command(config_path):
             )
             total_chunks += stored_count
             
-            print(f"  Stored {stored_count} chunks from {org_file.name}")
+            output.append(f"  Stored {stored_count} chunks from {org_file.name}")
             
         except Exception as e:
-            print(f"  Error processing {org_file.name}: {e}")
+            output.append(f"  Error processing {org_file.name}: {e}")
             continue
     
-    print(f"\nIndexing complete! Stored {total_chunks} total chunks in collection '{collection_name}'")
+    output.append(f"\nIndexing complete! Stored {total_chunks} total chunks in collection '{collection_name}'")
+    
+    result = "\n".join(output)
+    print(result)
+    return result
 
 
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(description="Knowledge Management System CLI")
+    parser.add_argument('--db-path', help='Override ChromaDB path from config')
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
     # Add config subcommand
@@ -230,13 +268,13 @@ def main():
     
     # Dispatch to appropriate handler
     if args.command == 'config':
-        config_command(args.config)
+        config_command(args.config, args.db_path)
     elif args.command == 'status':
-        status_command(args.config)
+        status_command(args.config, args.db_path)
     elif args.command == 'index':
-        index_command(args.config)
+        index_command(args.config, args.db_path)
     elif args.command == 'search':
-        search_command(args.query, args.config, args.results, args.collection)
+        search_command(args.query, args.config, args.results, args.collection, args.db_path)
     else:
         parser.print_help()
 

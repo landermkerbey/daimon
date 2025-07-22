@@ -210,3 +210,94 @@ def test_cli_index_command():
         except SystemExit:
             # argparse calls sys.exit, which is normal behavior
             assert True, "CLI completed normally"
+
+
+def test_cli_index_with_temp_db(tmp_path):
+    """Test CLI index command with temporary database."""
+    import sys
+    project_root = Path(__file__).parent.parent
+    sys.path.insert(0, str(project_root))
+    
+    import cli
+    
+    # Create temporary ChromaDB path
+    temp_db = tmp_path / "test_chromadb"
+    
+    # Run index command with temporary database
+    result = cli.index_command("config/default.json", str(temp_db))
+    
+    # Verify output contains expected information
+    assert "Loading config from config/default.json" in result
+    assert "org files to process" in result
+    assert "Creating/clearing collection: knowledge_base" in result
+    assert "Indexing complete!" in result
+
+
+def test_cli_search_with_temp_db(tmp_path):
+    """Test CLI search command with temporary database."""
+    import sys
+    project_root = Path(__file__).parent.parent
+    sys.path.insert(0, str(project_root))
+    
+    import cli
+    
+    # Create temporary ChromaDB path
+    temp_db = tmp_path / "test_chromadb"
+    
+    # First index some content
+    index_result = cli.index_command("config/default.json", str(temp_db))
+    assert "Indexing complete!" in index_result
+    
+    # Then search for content
+    search_result = cli.search_command("machine learning", "config/default.json", 3, "knowledge_base", str(temp_db))
+    
+    # Verify search output
+    assert "Searching for: 'machine learning'" in search_result
+    assert "Collection: knowledge_base" in search_result
+    # Should find results since we indexed content
+    assert ("No results found" not in search_result) or ("Result 1:" in search_result)
+
+
+def test_cli_status_with_temp_db(tmp_path):
+    """Test CLI status command with temporary database."""
+    import sys
+    project_root = Path(__file__).parent.parent
+    sys.path.insert(0, str(project_root))
+    
+    import cli
+    
+    # Create temporary ChromaDB path
+    temp_db = tmp_path / "test_chromadb"
+    
+    # Check status before indexing
+    status_result = cli.status_command("config/default.json", str(temp_db))
+    assert "Knowledge Base Status" in status_result
+    assert "Org files found:" in status_result
+    
+    # Index some content
+    cli.index_command("config/default.json", str(temp_db))
+    
+    # Check status after indexing
+    status_result = cli.status_command("config/default.json", str(temp_db))
+    assert "knowledge_base:" in status_result
+    assert "documents" in status_result
+
+
+def test_cli_config_with_db_override(tmp_path):
+    """Test CLI config command with database path override."""
+    import sys
+    project_root = Path(__file__).parent.parent
+    sys.path.insert(0, str(project_root))
+    
+    import cli
+    
+    # Create temporary ChromaDB path
+    temp_db = tmp_path / "test_chromadb"
+    
+    # Run config command with database override
+    result = cli.config_command("config/default.json", str(temp_db))
+    
+    # Verify output shows override
+    assert "Knowledge Management System Configuration" in result
+    assert str(temp_db) in result
+    assert "overridden from command line" in result
