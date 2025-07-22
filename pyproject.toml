@@ -1,21 +1,32 @@
 [project]
-name = "daimon"
+name = "daimonkms"
 version = "0.1.0"
-description = "AI-powered knowledge management assistant"
+description = "AI-powered knowledge management system with semantic search"
 authors = [
-    {name = "landermkerbey",email = "landermkerbey@protonmail.com"}
+    {name = "landermkerbey", email = "landermkerbey@protonmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.8"
 dependencies = [
-    "chromadb (>=1.0.15,<2.0.0)"
+    "chromadb>=0.4.0",
+    "pathlib-abc>=0.1.0; python_version < '3.10'"
 ]
 
+[project.scripts]
+daimon = "daimonkms.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0"
+]
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.4.1"
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
 
