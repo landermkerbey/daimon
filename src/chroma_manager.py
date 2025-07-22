@@ -22,6 +22,18 @@ class ChromaManager:
             collection = self.client.create_collection(collection_name)
             return collection
     
+    def clear_and_create_collection(self, collection_name):
+        """Delete existing collection and create a new one."""
+        try:
+            # Try to delete existing collection
+            self.client.delete_collection(collection_name)
+        except (ValueError, Exception):
+            # Collection doesn't exist, which is fine
+            pass
+        
+        # Create new collection
+        return self.client.create_collection(collection_name)
+    
     def store_chunks(self, collection_name, chunks):
         """Store text chunks in the specified collection."""
         collection = self.create_collection(collection_name)
@@ -34,6 +46,35 @@ class ChromaManager:
         collection.add(
             documents=documents,
             ids=ids
+        )
+        
+        return len(chunks)
+    
+    def store_chunks_with_metadata(self, collection_name, chunks, source_file, headers):
+        """Store text chunks with metadata about source file."""
+        collection = self.create_collection(collection_name)
+        
+        # Prepare documents and unique IDs that include source file
+        documents = chunks
+        ids = [f"{source_file}_chunk_{i}" for i in range(len(chunks))]
+        
+        # Prepare metadata for each chunk
+        metadatas = []
+        for i in range(len(chunks)):
+            metadata = {
+                "source_file": source_file,
+                "chunk_index": i,
+                "title": headers.get('title', ''),
+                "filetags": ','.join(headers.get('filetags', [])),
+                "id": headers.get('id', '')
+            }
+            metadatas.append(metadata)
+        
+        # Add documents to collection with metadata
+        collection.add(
+            documents=documents,
+            ids=ids,
+            metadatas=metadatas
         )
         
         return len(chunks)

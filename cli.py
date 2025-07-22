@@ -78,9 +78,10 @@ def index_command(config_path):
         print("No org files found. Check your knowledge_base_root path in config.")
         return
     
-    # Create collection for this indexing run
+    # Create collection for this indexing run (this will clear existing data)
     collection_name = "knowledge_base"
-    chroma.create_collection(collection_name)
+    print(f"Creating/clearing collection: {collection_name}")
+    chroma.clear_and_create_collection(collection_name)
     
     total_chunks = 0
     
@@ -102,8 +103,13 @@ def index_command(config_path):
             # Chunk the content
             chunks = chunker.chunk_content(content)
             
-            # Store chunks in ChromaDB
-            stored_count = chroma.store_chunks(collection_name, chunks)
+            # Store chunks in ChromaDB with file-specific metadata
+            stored_count = chroma.store_chunks_with_metadata(
+                collection_name, 
+                chunks, 
+                org_file.stem,  # filename without extension
+                headers
+            )
             total_chunks += stored_count
             
             print(f"  Stored {stored_count} chunks from {org_file.name}")
