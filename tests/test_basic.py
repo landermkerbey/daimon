@@ -134,3 +134,56 @@ def test_end_to_end_pipeline(sample_org_file, temp_dir):
     assert len(chunks) > 0, "Should have created chunks from content"
     assert stored_count == len(chunks), "Should have stored all chunks"
     assert collection.count() == len(chunks), "Collection should contain all chunks"
+
+
+def test_chroma_manager_query(temp_dir):
+    """Test that ChromaManager can query stored content."""
+    from chroma_manager import ChromaManager
+    
+    # Create manager and store test content
+    chroma = ChromaManager(temp_dir / "test_chromadb")
+    test_chunks = [
+        "This is about machine learning and AI",
+        "Python programming is very useful",
+        "Organic chemistry involves carbon compounds"
+    ]
+    
+    chroma.create_collection("test_query")
+    chroma.store_chunks("test_query", test_chunks)
+    
+    # Query for content
+    results = chroma.query_collection("test_query", "artificial intelligence")
+    
+    # Verify we get results
+    assert len(results["documents"]) > 0, "Should return query results"
+    assert len(results["documents"][0]) > 0, "Should have at least one document result"
+
+
+def test_query_sample_content(sample_org_file, temp_dir):
+    """Test querying real org file content through full pipeline."""
+    from config import Config
+    from parser import OrgParser
+    from chunking import ChunkingEngine
+    from chroma_manager import ChromaManager
+    
+    # Process sample org file through pipeline
+    config = Config()
+    parser = OrgParser(sample_org_file)
+    chunker = ChunkingEngine(chunk_size=config.chunk_size, chunk_overlap=config.chunk_overlap)
+    chroma = ChromaManager(temp_dir / "sample_chromadb")
+    
+    # Store the content
+    content = parser.parse_content()
+    chunks = chunker.chunk_content(content)
+    chroma.create_collection("sample_collection")
+    chroma.store_chunks("sample_collection", chunks)
+    
+    # Query for content that exists in the sample file
+    results = chroma.query_collection("sample_collection", "Main Topic")
+    
+    # Verify we get relevant results
+    assert len(results["documents"]) > 0, "Should find matching content"
+    assert len(results["documents"][0]) > 0, "Should return at least one document"
+    # Check that the returned content contains expected text
+    returned_docs = results["documents"][0]
+    assert any("Main Topic" in doc for doc in returned_docs), "Should find content containing 'Main Topic'"

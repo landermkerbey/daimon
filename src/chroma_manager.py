@@ -37,3 +37,16 @@ class ChromaManager:
         )
         
         return len(chunks)
+    
+    def query_collection(self, collection_name, query_text, n_results=5):
+        """Query a collection for similar content."""
+        try:
+            collection = self.client.get_collection(collection_name)
+            results = collection.query(
+                query_texts=[query_text],
+                n_results=n_results
+            )
+            return results
+        except (ValueError, Exception):
+            # Collection doesn't exist or other error
+            return {"documents": [], "metadatas": [], "distances": [], "ids": []}
