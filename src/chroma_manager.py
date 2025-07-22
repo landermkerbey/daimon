@@ -17,7 +17,7 @@ class ChromaManager:
             # Try to get existing collection first
             collection = self.client.get_collection(collection_name)
             return collection
-        except ValueError:
+        except (ValueError, Exception):
             # Collection doesn't exist, create it
             collection = self.client.create_collection(collection_name)
             return collection
