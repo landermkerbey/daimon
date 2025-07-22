@@ -1,0 +1,47 @@
+:PROPERTIES:
+:ID:       a1b2c3d4-5678-9abc-def0-123456789abc
+:END:
+#+TITLE: Machine Learning Fundamentals
+#+filetags: :ai:machine-learning:algorithms:
+
+* Introduction to Machine Learning
+
+Machine learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without being explicitly programmed for every task.
+
+** Types of Machine Learning
+
+*** Supervised Learning
+In supervised learning, algorithms learn from labeled training data to make predictions on new, unseen data. Common examples include:
+- Classification (predicting categories)
+- Regression (predicting continuous values)
+
+*** Unsupervised Learning
+Unsupervised learning finds hidden patterns in data without labeled examples:
+- Clustering (grouping similar data points)
+- Dimensionality reduction
+- Anomaly detection
+
+*** Reinforcement Learning
+An agent learns to make decisions by interacting with an environment and receiving rewards or penalties.
+
+* Popular Algorithms
+
+** Neural Networks
+Deep learning models inspired by the human brain, consisting of interconnected nodes (neurons) organized in layers.
+
+** Decision Trees
+Tree-like models that make decisions by splitting data based on feature values.
+
+** Support Vector Machines
+Algorithms that find optimal boundaries to separate different classes of data.
+
+* Applications
+
+Machine learning powers many modern technologies:
+- Image recognition and computer vision
+- Natural language processing
+- Recommendation systems
+- Autonomous vehicles
+- Medical diagnosis
+
+See also: [[file:neural-networks.org][Neural Networks Deep Dive]]

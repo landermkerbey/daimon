@@ -1,0 +1,72 @@
+:PROPERTIES:
+:ID:       9876fedc-ba98-7654-3210-fedcba987654
+:END:
+#+TITLE: Space Exploration and Astronomy
+#+filetags: :space:astronomy:science:exploration:
+
+* The Solar System
+
+** Inner Planets
+
+*** Mars: The Red Planet
+Mars has captured human imagination for centuries. Recent missions have revealed:
+- Evidence of ancient water flows
+- Seasonal methane emissions
+- Polar ice caps containing water and carbon dioxide
+- Dust storms that can engulf the entire planet
+
+The search for past or present life on Mars continues with rovers like Perseverance collecting samples for future return to Earth.
+
+*** Venus: Earth's Twin Gone Wrong
+Despite similar size to Earth, Venus has:
+- Surface temperatures of 900°F (480°C)
+- Crushing atmospheric pressure
+- Sulfuric acid clouds
+- Retrograde rotation (spins backwards)
+
+** Outer Planets
+
+*** Jupiter: The Gas Giant
+Jupiter's massive gravity acts as a cosmic vacuum cleaner, protecting inner planets from asteroids and comets.
+
+*** Saturn's Rings
+The ring system consists of countless ice and rock particles, some as small as dust grains, others as large as houses.
+
+* Deep Space Exploration
+
+** Exoplanets
+
+The Kepler Space Telescope and other instruments have discovered thousands of planets orbiting other stars.
+
+*** Habitable Zone
+The "Goldilocks zone" where liquid water could exist on a planet's surface - not too hot, not too cold.
+
+*** Notable Discoveries
+- Proxima Centauri b: Closest known exoplanet
+- TRAPPIST-1 system: Seven Earth-sized planets
+- Kepler-452b: "Earth's cousin"
+
+** Interstellar Travel Challenges
+
+*** Distances
+The nearest star system (Alpha Centauri) is 4.37 light-years away. With current technology, it would take tens of thousands of years to reach.
+
+*** Propulsion Technologies
+- Ion drives for long-duration missions
+- Solar sails using radiation pressure
+- Theoretical concepts: fusion ramjets, antimatter engines
+
+* Future Missions
+
+** Moon Base Development
+Establishing a permanent lunar presence as a stepping stone to Mars.
+
+** Mars Colonization
+SpaceX and NASA are developing technologies for human missions to Mars in the 2030s.
+
+** Asteroid Mining
+Near-Earth asteroids contain valuable metals and water that could support space exploration.
+
+The universe holds infinite mysteries waiting to be discovered.
+
+Cross-reference: [[file:physics-quantum.org][Quantum Physics]]

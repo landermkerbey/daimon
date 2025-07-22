@@ -1,0 +1,58 @@
+:PROPERTIES:
+:ID:       2468ace0-1357-9bdf-2468-ace013579bdf
+:END:
+#+TITLE: Ethics and Moral Philosophy
+#+filetags: :philosophy:ethics:morality:
+
+* Classical Ethical Theories
+
+** Virtue Ethics (Aristotelian)
+
+Virtue ethics focuses on character rather than actions or consequences. Aristotle argued that virtues are habits of excellence that lead to human flourishing (eudaimonia).
+
+*** The Golden Mean
+Virtues often lie between extremes of excess and deficiency:
+- Courage (between cowardice and recklessness)
+- Generosity (between stinginess and wasteful spending)
+- Honesty (between brutal truth-telling and deception)
+
+** Deontological Ethics (Kantian)
+
+Immanuel Kant proposed that moral actions are those performed from duty, guided by universal moral laws.
+
+*** Categorical Imperative
+"Act only according to that maxim whereby you can at the same time will that it should become a universal law."
+
+This principle demands that we consider whether our actions could be universally applied without contradiction.
+
+** Consequentialism and Utilitarianism
+
+Actions are judged by their outcomes. The greatest good for the greatest number of people.
+
+*** Mill's Harm Principle
+"The only purpose for which power can be rightfully exercised over any member of a civilized community, against his will, is to prevent harm to others."
+
+* Modern Ethical Dilemmas
+
+** Technology and Privacy
+
+Digital surveillance raises questions about the balance between security and personal freedom.
+
+** Environmental Ethics
+
+Do we have moral obligations to future generations? How do we weigh economic development against environmental protection?
+
+** Bioethics
+
+Medical advances create new moral questions:
+- Gene editing and human enhancement
+- End-of-life care decisions
+- Resource allocation in healthcare
+
+* Applied Ethics in Daily Life
+
+Ethical decision-making frameworks can guide us through complex personal and professional situations.
+
+Consider multiple perspectives, examine consequences, and reflect on underlying principles.
+
+Related reading: [[file:political-philosophy.org][Political Philosophy]]

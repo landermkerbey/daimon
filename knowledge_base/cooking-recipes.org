@@ -1,0 +1,64 @@
+:PROPERTIES:
+:ID:       f9e8d7c6-b5a4-3210-9876-fedcba987654
+:END:
+#+TITLE: Favorite Cooking Recipes
+#+filetags: :cooking:recipes:food:
+
+* Italian Cuisine
+
+** Classic Pasta Carbonara
+
+*** Ingredients
+- 400g spaghetti
+- 200g guanciale or pancetta
+- 4 large eggs
+- 100g Pecorino Romano cheese, grated
+- Black pepper
+- Salt
+
+*** Instructions
+1. Cook pasta in salted boiling water until al dente
+2. Crisp the guanciale in a large pan
+3. Whisk eggs with cheese and pepper
+4. Combine hot pasta with guanciale
+5. Remove from heat and quickly mix in egg mixture
+6. Serve immediately with extra cheese
+
+** Margherita Pizza Dough
+
+A simple yet perfect pizza base that requires patience for proper fermentation.
+
+*** Dough Recipe
+- 500g tipo 00 flour
+- 325ml water
+- 10g salt
+- 3g active dry yeast
+
+Mix ingredients, knead for 10 minutes, then let rise for 24 hours in refrigerator.
+
+* Asian Flavors
+
+** Thai Green Curry
+
+This aromatic curry balances sweet, spicy, and savory flavors perfectly.
+
+*** Key Ingredients
+- Green curry paste
+- Coconut milk
+- Thai basil
+- Fish sauce
+- Palm sugar
+- Thai eggplant
+
+The secret is to fry the curry paste in coconut cream before adding the remaining liquid.
+
+* Baking Essentials
+
+** Sourdough Starter Maintenance
+
+A living culture that requires daily feeding:
+- Discard half of starter
+- Add equal parts flour and water
+- Mix well and let sit at room temperature
+
+Link to advanced techniques: [[file:fermentation-science.org][Fermentation Science]]
