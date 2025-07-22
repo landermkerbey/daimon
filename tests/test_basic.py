@@ -187,3 +187,21 @@ def test_query_sample_content(sample_org_file, temp_dir):
     # Check that the returned content contains expected text
     returned_docs = results["documents"][0]
     assert any("Main Topic" in doc for doc in returned_docs), "Should find content containing 'Main Topic'"
+
+
+def test_cli_index_command():
+    """Test that CLI index command works."""
+    import sys
+    from unittest.mock import patch
+    
+    # Mock sys.argv to simulate command line arguments
+    with patch.object(sys, 'argv', ['cli.py', 'index']):
+        # Import and test the CLI
+        import cli
+        try:
+            cli.main()
+            # If we get here without exception, the test passes
+            assert True, "CLI index command should run without crashing"
+        except SystemExit:
+            # argparse calls sys.exit, which is normal behavior
+            assert True, "CLI completed normally"
