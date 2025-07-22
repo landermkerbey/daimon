@@ -6,22 +6,58 @@ from pathlib import Path
 sys.path.append('src')
 
 from config import Config
+from config_loader import find_config_file
 from scanner import KnowledgeBaseScanner
 from parser import OrgParser
 from chunking import ChunkingEngine
 from chroma_manager import ChromaManager
 
 
-def config_command(config_path, db_path_override=None):
+def get_config_path(args_config):
+    """
+    Determine which config file to use based on CLI args and discovery.
+    
+    Priority order:
+    1. CLI --config argument (if provided)
+    2. Automatic discovery via find_config_file()
+    3. Error if none found
+    """
+    if args_config:
+        # User explicitly specified config file
+        config_path = Path(args_config)
+        if not config_path.exists():
+            print(f"Error: Specified config file not found: {config_path}")
+            sys.exit(1)
+        print(f"Using config file: {config_path} (specified via --config)")
+        return str(config_path)
+    
+    # Try automatic discovery
+    discovered_config = find_config_file()
+    if discovered_config:
+        print(f"Using config file: {discovered_config} (auto-discovered)")
+        return str(discovered_config)
+    
+    # No config found anywhere
+    print("Error: No configuration file found.")
+    print("Searched for:")
+    print("  - ./config/default.json")
+    print("  - ~/.config/daimonkms/config.json")
+    print("Please create a config file or specify one with --config")
+    sys.exit(1)
+
+
+def config_command(args_config, db_path_override=None):
     """Display current configuration settings."""
     output = []
     output.append("Knowledge Management System Configuration")
     output.append("=" * 50)
-    output.append(f"Config file: {config_path}")
-    output.append("")
     
     try:
+        config_path = get_config_path(args_config)
         config = Config(config_path)
+        
+        output.append(f"Config file: {config_path}")
+        output.append("")
         output.append("Settings:")
         output.append(f"  Knowledge Base Root: {config.knowledge_base_root}")
         
@@ -51,13 +87,14 @@ def config_command(config_path, db_path_override=None):
     return result
 
 
-def status_command(config_path, db_path_override=None):
+def status_command(args_config, db_path_override=None):
     """Show knowledge base status and statistics."""
     output = []
     output.append("Knowledge Base Status")
     output.append("=" * 30)
     
     try:
+        config_path = get_config_path(args_config)
         config = Config(config_path)
         output.append(f"Using config: {config_path}")
         output.append("")
@@ -103,16 +140,23 @@ def status_command(config_path, db_path_override=None):
     return result
 
 
-def search_command(query, config_path, results=5, collection="knowledge_base", db_path_override=None):
+def search_command(query, args_config, results=5, collection="knowledge_base", db_path_override=None):
     """Search the knowledge base for relevant content."""
     output = []
     
-    # Load configuration
-    config = Config(config_path)
-    
-    # Initialize ChromaManager
-    db_path = db_path_override if db_path_override else config.chroma_db_path
-    chroma = ChromaManager(db_path)
+    try:
+        # Load configuration
+        config_path = get_config_path(args_config)
+        config = Config(config_path)
+        
+        # Initialize ChromaManager
+        db_path = db_path_override if db_path_override else config.chroma_db_path
+        chroma = ChromaManager(db_path)
+    except Exception as e:
+        output.append(f"Error loading configuration: {e}")
+        result = "\n".join(output)
+        print(result)
+        return result
     
     output.append(f"Searching for: '{query}'")
     output.append(f"Collection: {collection}")
@@ -159,21 +203,28 @@ def search_command(query, config_path, results=5, collection="knowledge_base", d
     return result
 
 
-def index_command(config_path, db_path_override=None):
+def index_command(args_config, db_path_override=None):
     """Index org files into ChromaDB."""
     output = []
     
-    # Load configuration
-    config = Config(config_path)
-    output.append(f"Loading config from {config_path}")
-    
-    # Initialize components
-    scanner = KnowledgeBaseScanner(config.knowledge_base_root)
-    chunker = ChunkingEngine(chunk_size=config.chunk_size, chunk_overlap=config.chunk_overlap)
-    
-    # Use override if provided, otherwise use config
-    db_path = db_path_override if db_path_override else config.chroma_db_path
-    chroma = ChromaManager(db_path)
+    try:
+        # Load configuration
+        config_path = get_config_path(args_config)
+        config = Config(config_path)
+        output.append(f"Loading config from {config_path}")
+        
+        # Initialize components
+        scanner = KnowledgeBaseScanner(config.knowledge_base_root)
+        chunker = ChunkingEngine(chunk_size=config.chunk_size, chunk_overlap=config.chunk_overlap)
+        
+        # Use override if provided, otherwise use config
+        db_path = db_path_override if db_path_override else config.chroma_db_path
+        chroma = ChromaManager(db_path)
+    except Exception as e:
+        output.append(f"Error loading configuration: {e}")
+        result = "\n".join(output)
+        print(result)
+        return result
     
     # Find all org files
     org_files = scanner.scan_org_files()
@@ -235,29 +286,22 @@ def index_command(config_path, db_path_override=None):
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(description="Knowledge Management System CLI")
+    parser.add_argument('--config', help='Path to config file (overrides auto-discovery)')
     parser.add_argument('--db-path', help='Override ChromaDB path from config')
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
     # Add config subcommand
     config_parser = subparsers.add_parser('config', help='Show configuration settings')
-    config_parser.add_argument('--config', default='config/default.json',
-                              help='Path to config file (default: config/default.json)')
     
     # Add status subcommand
     status_parser = subparsers.add_parser('status', help='Show knowledge base status')
-    status_parser.add_argument('--config', default='config/default.json',
-                              help='Path to config file (default: config/default.json)')
     
     # Add index subcommand
     index_parser = subparsers.add_parser('index', help='Index org files into ChromaDB')
-    index_parser.add_argument('--config', default='config/default.json', 
-                             help='Path to config file (default: config/default.json)')
     
     # Add search subcommand
     search_parser = subparsers.add_parser('search', help='Search the knowledge base')
     search_parser.add_argument('query', help='Search query text')
-    search_parser.add_argument('--config', default='config/default.json',
-                              help='Path to config file (default: config/default.json)')
     search_parser.add_argument('--results', type=int, default=5,
                               help='Number of results to return (default: 5)')
     search_parser.add_argument('--collection', default='knowledge_base',
