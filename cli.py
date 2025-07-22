@@ -12,6 +12,80 @@ from chunking import ChunkingEngine
 from chroma_manager import ChromaManager
 
 
+def config_command(config_path):
+    """Display current configuration settings."""
+    print("Knowledge Management System Configuration")
+    print("=" * 50)
+    print(f"Config file: {config_path}")
+    print()
+    
+    try:
+        config = Config(config_path)
+        print("Settings:")
+        print(f"  Knowledge Base Root: {config.knowledge_base_root}")
+        print(f"  ChromaDB Path: {config.chroma_db_path}")
+        print(f"  Chunk Size: {config.chunk_size}")
+        print(f"  Chunk Overlap: {config.chunk_overlap}")
+        
+        # Check if paths exist
+        kb_path = Path(config.knowledge_base_root)
+        db_path = Path(config.chroma_db_path)
+        
+        print()
+        print("Path Status:")
+        print(f"  Knowledge Base: {'✓ exists' if kb_path.exists() else '✗ not found'} ({kb_path.absolute()})")
+        print(f"  ChromaDB: {'✓ exists' if db_path.exists() else '✗ not found'} ({db_path.absolute()})")
+        
+    except Exception as e:
+        print(f"Error loading config: {e}")
+
+
+def status_command(config_path):
+    """Show knowledge base status and statistics."""
+    print("Knowledge Base Status")
+    print("=" * 30)
+    
+    try:
+        config = Config(config_path)
+        print(f"Using config: {config_path}")
+        print()
+        
+        # Check knowledge base files
+        scanner = KnowledgeBaseScanner(config.knowledge_base_root)
+        org_files = scanner.scan_org_files()
+        print(f"Source Files:")
+        print(f"  Org files found: {len(org_files)}")
+        if org_files:
+            print(f"  Files:")
+            for org_file in sorted(org_files):
+                print(f"    - {org_file.name}")
+        print()
+        
+        # Check ChromaDB status
+        chroma = ChromaManager(config.chroma_db_path)
+        print("ChromaDB Status:")
+        
+        try:
+            # Try to get collections
+            collections = chroma.client.list_collections()
+            print(f"  Collections: {len(collections)}")
+            
+            if collections:
+                for collection in collections:
+                    count = collection.count()
+                    print(f"    - {collection.name}: {count} documents")
+            else:
+                print("    No collections found")
+                print("    Tip: Run 'python cli.py index' to create and populate collections")
+                
+        except Exception as e:
+            print(f"  Database not accessible: {e}")
+            print("  Tip: Run 'python cli.py index' to initialize the database")
+            
+    except Exception as e:
+        print(f"Error checking status: {e}")
+
+
 def search_command(query, config_path, results=5, collection="knowledge_base"):
     """Search the knowledge base for relevant content."""
     # Load configuration
@@ -126,6 +200,16 @@ def main():
     parser = argparse.ArgumentParser(description="Knowledge Management System CLI")
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
+    # Add config subcommand
+    config_parser = subparsers.add_parser('config', help='Show configuration settings')
+    config_parser.add_argument('--config', default='config/default.json',
+                              help='Path to config file (default: config/default.json)')
+    
+    # Add status subcommand
+    status_parser = subparsers.add_parser('status', help='Show knowledge base status')
+    status_parser.add_argument('--config', default='config/default.json',
+                              help='Path to config file (default: config/default.json)')
+    
     # Add index subcommand
     index_parser = subparsers.add_parser('index', help='Index org files into ChromaDB')
     index_parser.add_argument('--config', default='config/default.json', 
@@ -145,7 +229,11 @@ def main():
     args = parser.parse_args()
     
     # Dispatch to appropriate handler
-    if args.command == 'index':
+    if args.command == 'config':
+        config_command(args.config)
+    elif args.command == 'status':
+        status_command(args.config)
+    elif args.command == 'index':
         index_command(args.config)
     elif args.command == 'search':
         search_command(args.query, args.config, args.results, args.collection)
