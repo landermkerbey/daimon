@@ -192,7 +192,12 @@ def test_query_sample_content(sample_org_file, temp_dir):
 def test_cli_index_command():
     """Test that CLI index command works."""
     import sys
+    import os
     from unittest.mock import patch
+    
+    # Add project root to path so we can import cli
+    project_root = Path(__file__).parent.parent
+    sys.path.insert(0, str(project_root))
     
     # Mock sys.argv to simulate command line arguments
     with patch.object(sys, 'argv', ['cli.py', 'index']):
