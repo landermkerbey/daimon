@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 
@@ -16,15 +17,25 @@ class Config:
         
         try:
             with open(config_file, 'r') as f:
-                self._config = json.load(f)
+                raw_config = json.load(f)
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid JSON in config file {config_file}: {e}")
         
         # Validate required keys
         required_keys = ['knowledge_base_root', 'chroma_db_path', 'chunk_size', 'chunk_overlap']
-        missing_keys = [key for key in required_keys if key not in self._config]
+        missing_keys = [key for key in required_keys if key not in raw_config]
         if missing_keys:
             raise ValueError(f"Missing required config keys: {missing_keys}")
+        
+        # Process path values to expand user paths and make them absolute
+        self._config = {}
+        for key, value in raw_config.items():
+            if key in ['knowledge_base_root', 'chroma_db_path']:
+                # Expand user paths (~ -> /home/user) and make absolute
+                expanded_path = os.path.expanduser(str(value))
+                self._config[key] = str(Path(expanded_path).resolve())
+            else:
+                self._config[key] = value
     
     def __getattr__(self, name):
         """Access config values as attributes."""
