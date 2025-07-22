@@ -1,6 +1,9 @@
 .aider*
 /local_cache
-/__pycache__
+**/__pycache__/
 /.pytest_cache
-/src/__pycache__
-/tests/__pycache__
+**/*.egg-info
+build/
+dist/
+*.pyc
+*.pyo
