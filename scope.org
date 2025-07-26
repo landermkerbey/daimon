@@ -1,0 +1,398 @@
+#+TITLE: Scope: Daimon KMS
+
+Daimon KMS is an AI-enhanced knowledge management system guided by a
+simple philosophy:
+
+"Knowledge that goes dormant is not useful knowledge."
+
+Learning is its own pleasure, but is most valuable when it fuels
+creativity. When you use the knowledge you accrue to make something
+new, that's when it comes alive. Daimon aims to use what I have
+already learned, done, or made to spur me on to learn, do and make
+more. It is a tool for cultivating creativity and intentionality in my
+daily life and projects.
+
+* Vision
+
+Here is a selection of key workflows Daimon should facilitate in its
+final form:
+
+** Editorial Assistant
+
+The user is writing a short story or novel and invokes Daimon to
+provide feedback on a draft. Daimon has access to all of the user's
+other writing, revision histories, commentary on the works of other
+writers; various musings about art, human nature, society, and
+philosophy; even LLM chat histories about literary craft. Daimon draws
+on all of this context to synthesize a notion of the sort of writer
+the user is aspiring to be, and provides feedback meant to stimulate
+the writer to evaluate their draft with an eye towards their personal
+growth. Where the story touches on specific knowledge domains, Daimon
+may draw on the user's relationship with that domain as demonstrated
+by documents to which Daimon has access. In this way, Daimon provides
+what a good editor can but is hard for even the most conscientious
+writer to provide for their own work: a sympathetic but detached
+perspective.
+
+** Language Practice Partner
+
+The user is studying a language and invokes Daimon to provide a
+conversation partner in that language. Daimon summons up an agent that
+adopts a persona as a native speaker of that language, drawing on an
+extensive chat history to build out memory and continuity for that
+persona, as well as a continuously evolving assessment of the user's
+facility in that language. In the early stages of learning, the agent
+provides all of its responses in a side-by-side format,
+target-language to the left, English translation to the right, but as
+the user demonstrates consistent comprehension, it begins to elide
+translation of sentences it judges the user likely knows. Daimon can
+draw off of other artifacts in the user's KMS such as spaced
+repetition data to get more granular in its analysis, but can also in
+turn propose new spaced repetition content. Daimon can also feed
+information about the user's interests to the agent to increase its
+ability to maintain an interesting conversation.
+
+** Socratic Academy
+
+The user is studying and working across multiple domains, generating a
+wealth of new ideas and writings both on their own and while
+interacting with Daimon-directed agents specializing in those various
+fields. Perhaps there is an agent teaching math, an agent teaching
+physics, and so on. Each of these leverage massive context and
+persistence to maintain an accurate picture of the user's progress
+when interacting with them, and generates reports about this. Another
+agent synthesizes these reports into a holistic, cross-domain
+view and passes this to a 'headmaster' agent that uses this
+information to question the user in a Socratic fashion, guiding them
+to explore the edges of their knowledge and see novel connections
+between the domains in which they are working. This then in turn helps
+shape the direction the individual domain expert agents take in
+teaching the user going forward.
+
+These are not intended to be exhaustive examples, but to give a
+general flavor of the intended use. Daimon hooks into the user's
+knowledge base and drives the user to enrich it both with the addition
+of new items and with records of interactions with Daimon itself. Over
+time, the system should not just 'remember', but evolve to better fit
+the user's wants and needs.
+
+* Principles
+
+What follows are the philosophical bases for the design of the system.
+
+** Comprehensiveness
+
+Daimon must be able to ingest and leverage all artifacts pertinent to
+activity and creativity. This includes, but is not limited to:
+
+- Books, essays, and articles the user has read or wants to read, as
+  well as their own annotations/commentary on such.
+- Music the user has listened to or wants to listen to, as well as
+  their own annotations/commentary on such. Extend the above to
+  representations of any artistic expressions with which the user
+  engages.
+- Personal journals.
+- E-mails
+- Configuration files for computing environments
+- Personal logs such as exercise logs, diet tracking, finances, contact info
+- "Agenda" material such as TODO lists, archives of finished tasks and projects
+- The user's own creative writings, be these original works,
+  criticism, copywork/craft exercises
+- Chat histories with LLMs
+- Spaced repetition materials, including the contents of the spaced
+  repetition notes themselves, but also historical data and analysis
+  on the creation/editing/deletion of notes and my performance with
+  them.
+- Code bases
+
+** Understanding
+
+Whatever agents Daimon coordinates use their access to the user's
+knowledge base to develop a clear picture of their hopes, aspirations,
+concerns, and reservations. This understanding guides their selection
+of tools when called upon for specific assistance as much as pragmatic
+implementation details do.
+
+** Socratic Enablement
+
+Daimon should facilitate smart, provocative questions above all
+else. The goal is to leverage AI to create a system that actually
+spurs the user to think *more* and *more clearly*, not *less*. The design of
+tools, the character of prompts, and the overall system architecture
+should prioritize this above solving problems for the user in ways
+that do not require their agency. In short, the AI should enable the
+user to be *more* human, not less.
+
+** Agent Coordination
+
+Daimon should provide a suite of tools and coordination techniques
+that allow many AI agents which are independently functional in
+specific domains to not just solve their own problems, but to
+communicate about those problems and solutions in a way other agents
+can comprehend and draw on. The issuing and reading of reports among
+agents to enrich cross-domain understanding is a vital part of the
+architecture.
+
+** Serendipity
+
+While Daimon should make the direct, intentional engagement the user
+has with their agents as smooth as possible, the real value
+proposition of not silo-ing knowledge and instead having full access
+to everything is creating the opportunity for surprises, divergent
+thought opportunities, and inspiration. The system should be designed
+to facilitate this, meaning it will be necessary for some agents not
+only to draw broadly from cross-domain information sources, but also
+to occasionally go beyond direct response to the user query, or to
+push back on it.
+
+** Self-Reflection
+
+The system should learn not just from the artifacts 'brought in' from
+outside it, but from itself. As the user uses the system, records of
+how they interact with the agents and how my behavior and output
+change will naturally accumulate. This is a gold mine for the system,
+and it should make full use of it to recalibrate and evolve, leading
+to a virtuous cycle: it challenges the user to grow, they feed it more
+to work with in designing those challenges.
+
+** Relatedness
+
+The system should be highly relational. This means not just vector
+storage for straight semantic matching, but relationship graphs
+between entities as well. This should empower the agents to draw
+richer, more surprising connections and help challenge the user to
+investigate them.
+
+** Local-First
+
+As much of the infrastructure should be able to run locally on a
+sufficiently powerful machine. It is likely pushing it to run a
+current high-end local model directly on one's laptop at present, but
+some less complex tasks could certainly be handled by smaller local
+models, and things like a vector database or graph database could also
+live and run locally on such a machine. As better and better models
+become more and more efficient, we can look to make it possible to
+run even the 'primary' roles with local LLMs.
+
+** FOSS-First
+
+As much of the infrastructure should be FOSS as possible. Right now,
+the complex tasks will need to leverage paid, proprietary APIs, but
+such parts as can be viably done FOSS should be.
+
+** Portability
+
+Daimon is meant to be as generalizable as possible, too. Minimal ecosystem
+lock-in. Portable file types (especially plain text) favored wherever possible.
+
+** Extensibility
+
+Daimon should facilitate easy definition and creation of additional
+agents as the need arises. This means not just an easy way for users
+to define plugins, but that Daimon itself should make the writing of
+such plugins easier by leveraging the user's knowledgebase, including
+code.
+
+** Incremental Growth
+
+Daimon develops in small steps, making steady progress towards the big
+vision.
+
+* Current Functional State
+
+*/ What Works Today (v0.1 Capabilities)
+The system is now a /fully functional semantic knowledge search tool/ with these working features:
+
+/Knowledge Ingestion:/
+- Discovers all .org files in directory trees
+- Parses org-mode format: #+TITLE:, #+filetags:, :PROPERTIES: drawers with UUID
+- Extracts and chunks content intelligently 
+- Stores in ChromaDB with metadata for semantic search
+
+/Command Line Interface (globally installed):/
+#+begin_src bash
+# Index your knowledge base
+daimon index
+
+# Search semantically across all content  
+daimon search "machine learning concepts"
+
+# Check system status and statistics
+daimon status
+
+# View current configuration
+daimon config
+#+end_src
+
+/Configuration Management:/
+- XDG-compliant config discovery (./config/default.json → ~/.config/daimonkms/config.json)
+- Override with --config flag for custom setups
+- JSON-based configuration for all system parameters
+
+/Technical Robustness:/
+- Comprehensive test suite with 20+ automated tests
+- Proper Python packaging (pip installable)
+- Modular architecture ready for extension
+- Handles real-world org-mode files correctly
+
+*/ Current Architecture
+#+begin_src
+System Components:
+├── Config Management (XDG-compliant discovery)
+├── File Scanner (recursive .org file discovery)  
+├── Org Parser (headers + content extraction)
+├── Content Chunker (semantic chunk generation)
+├── ChromaDB Manager (vector storage & retrieval)
+└── CLI Interface (user-facing commands)
+
+Data Flow:
+.org files → Scanner → Parser → Chunker → ChromaDB → Search Results
+#+end_src
+
+*/ Real-World Usage Ready
+The system is /immediately useful/ for daily knowledge work:
+- Index your existing org-mode knowledge base
+- Search semantically rather than grep/browsing
+- Discover connections across different domains
+- Works with your existing org-mode workflow (no format changes needed)
+
+* Technical Implementation Details
+
+*/ File Format Support
+/Org-mode structure supported:/
+#+begin_src org
+:PROPERTIES:
+:ID: uuid-goes-here
+:END:
+#+TITLE: Your Note Title
+#+filetags: :domain:form:granularity:
+
+ * Your content structure
+ Regular paragraphs, links, everything org-mode supports.
+#+end_src
+
+*/ Three-Axis Tagging System
+- /Domain:/ What it's about (#mathematics, #creative-writing, #mandarin)
+- /Form:/ How it's structured (#journal, #reference, #fiction, #procedure) 
+- /Granularity:/ Most representative category (#set-theory, #short-story, #vietnamese)
+
+*/ Configuration Schema
+#+begin_src json
+{
+  "knowledge_base_root": "./knowledge_base",
+  "chroma_db_path": "./local_cache/chromadb", 
+  "chunk_size": 1000,
+  "chunk_overlap": 200
+}
+#+end_src
+
+* Development Methodology Success
+
+*/ Micro-Prompt Approach
+Our development used a revolutionary "micro-prompt" methodology:
+- Each change implements exactly one small capability (2-3 minutes)
+- Always leaves code in runnable, testable state
+- Human maintains full understanding and control
+- Dramatically reduces complexity and technical debt
+- Enables learning-focused development
+
+/This approach should be continued for all future development./
+
+*/ Testing Philosophy  
+- Test-driven development from day one
+- Real test data matching actual org-mode format
+- Automated CLI testing with proper cleanup
+- Integration tests proving end-to-end functionality
+
+* Immediate Next Steps & Development Priorities
+
+*/ Phase A: Foundation Solidification (Recommended Next)
+/High-impact improvements for daily usage:/
+
+1. /Enhanced Error Handling/
+   - Graceful handling of malformed org files
+   - Clear error messages for common failures
+   - Recovery strategies for partial indexing failures
+
+2. /Intelligent Org-Aware Chunking/
+   - Respect heading boundaries instead of character limits
+   - Preserve heading hierarchy in metadata
+   - Handle org-mode structures (tables, code blocks, lists) properly
+
+3. /Advanced Search Capabilities/
+   - Filter by tags, directories, file types
+   - Multiple result display formats
+   - Search within specific domains or forms
+
+4. /Improved User Experience/
+   - Progress indicators during indexing
+   - Better result formatting with context
+   - Configuration validation and helpful defaults
+
+*/ Phase B: Sync & Scale (Future)
+- File change detection for incremental updates
+- Multi-device synchronization support  
+- Manifest-based rebuild optimization
+- Conflict resolution for concurrent edits
+
+*/ Phase C: AI Agent Integration (Future Vision)
+- Standardized agent query interfaces
+- Multi-agent knowledge synthesis
+- Context-aware knowledge retrieval
+- Agent memory and conversation state
+
+* PRD Development Guidance
+
+*/ For Requirements Document Creation
+This summary provides the foundation for a comprehensive PRD. Key areas to formalize:
+
+/User Stories:/ The system currently serves the "personal knowledge
+worker" who wants to find and connect information across their
+org-mode knowledge base.
+
+/Success Metrics:/ How do we measure whether the system stimulates
+creativity and learning? Usage patterns, discovery rates, creative
+output correlation?
+
+/Scale Requirements:/ Current architecture targets ~10,000 org
+files. What are the performance requirements as knowledge bases grow?
+
+/Integration Requirements:/ How should this work with existing org-mode
+workflows, Emacs integration, publishing systems?
+
+/Multi-User Considerations:/ Currently single-user. What about teams,
+shared knowledge bases, collaborative discovery?
+
+*/ Current State Strengths to Build On
+- Working end-to-end system (not just proof-of-concept)
+- Real-world org-mode format support
+- Extensible, modular architecture
+- Proven development methodology
+- Comprehensive test coverage
+- User-friendly CLI interface
+
+*/ Key Architecture Decisions Made
+- ChromaDB for vector storage (swappable embedding models)
+- Local-first with sync rather than cloud-native
+- Configuration-driven design for flexibility  
+- Rebuild-on-sync approach for simplicity
+- Python ecosystem for AI/ML integration readiness
+
+* Development Continuity
+
+*/ How to Resume Development
+1. /Use the micro-prompt approach/ - it was crucial to our success
+2. /Start with Phase A priorities/ - foundation improvements have highest user impact
+3. /Test real usage first/ - use the current system daily to identify genuine needs
+4. /Maintain test coverage/ - every new feature should have corresponding tests
+5. /Keep configuration-driven/ - avoid hard-coding, enable experimentation
+
+*/ Technical Debt & Future Considerations
+- Chunking strategy needs org-mode awareness
+- Error handling is minimal (currently fails fast)
+- No incremental update capability yet
+- Single collection model may need refinement for large knowledge bases
+- Embedding model optimization deferred until usage patterns clear
+
+This system is ready for daily use and positioned for systematic
+enhancement based on real-world feedback.
